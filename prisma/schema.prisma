@@ -1,0 +1,64 @@
+// Prisma schema for TechStack app
+// Database: Neon or any Postgres
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders     Order[]
+  payments   Payment[]
+}
+
+model Order {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripeSessionId String? @unique
+  status        String    @default("pending") // pending | paid | failed | cancelled
+  totalAmount   Int       // in cents
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  payments Payment[]
+
+  @@index([userId])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stripePaymentId String?  @unique
+  amount          Int      // in cents
+  status          String   @default("pending") // pending | completed | failed | refunded
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([orderId])
+}
+
+model Content {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  body      String?  @db.Text
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+}
