@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { resend, FROM_EMAIL } from "@/lib/resend";
+import { paymentConfirmationEmailHtml } from "@/lib/emails/payment-confirmation";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -56,6 +58,30 @@ export async function POST(request: Request) {
         { error: "Failed to update order" },
         { status: 500 }
       );
+    }
+
+    // Send payment confirmation email (fire-and-forget)
+    if (resend) {
+      const toEmail = session.customer_email;
+      if (toEmail) {
+        const user = await prisma.user
+          .findUnique({ where: { id: userId }, select: { name: true } })
+          .catch(() => null);
+
+        resend.emails
+          .send({
+            from: FROM_EMAIL,
+            to: toEmail,
+            subject: "Your TechStacker payment was received",
+            html: paymentConfirmationEmailHtml(
+              user?.name ?? null,
+              toEmail,
+              session.amount_total ?? 0,
+              orderId
+            ),
+          })
+          .catch((err: unknown) => console.error("Payment email failed:", err));
+      }
     }
   }
 

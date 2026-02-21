@@ -49,6 +49,11 @@ export default function LoginPage({
                             {searchParams.success}
                         </p>
                     )}
+                    <div className="flex justify-end">
+                        <Link href="/forgot-password" className="text-xs text-white/50 hover:text-[#00CEC9] hover:underline">
+                            Forgot password?
+                        </Link>
+                    </div>
                     <button
                         formAction={login}
                         className="w-full rounded-xl bg-gradient-to-r from-[#6C5CE7] to-[#0984E3] px-4 py-3 font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
