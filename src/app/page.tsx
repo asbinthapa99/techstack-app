@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Contact } from './components/Contact'
 import { CryptoDashboard } from './components/CryptoDashboard'
-import { NewsFeed } from './components/NewsFeed'
 
 export default function Home() {
   return (
@@ -27,7 +26,6 @@ export default function Home() {
             <a href="#about">About</a>
             <a href="#pricing">Pricing</a>
             <a href="#crypto">Crypto</a>
-            <a href="#news">News</a>
             <Link href="/login" className="nav-cta">Client Login</Link>
           </div>
           <button className="nav-toggle" id="navToggle" aria-label="Menu"><i className="fas fa-bars"></i></button>
@@ -225,9 +223,6 @@ export default function Home() {
 
       {/* ===== CRYPTO DASHBOARD ===== */}
       <CryptoDashboard />
-
-      {/* ===== NEWS FEED ===== */}
-      <NewsFeed />
 
       {/* ===== CONTACT ===== */}
       <Contact />
