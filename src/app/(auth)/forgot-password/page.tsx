@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { forgotPassword } from "./actions";
 
-export default function ForgotPasswordPage({
+export default async function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: { error?: string; success?: string };
+  searchParams: Promise<{ error?: string; success?: string }>;
 }) {
+  const { error, success } = await searchParams;
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-xl">
@@ -28,14 +29,14 @@ export default function ForgotPasswordPage({
               autoComplete="email"
             />
           </div>
-          {searchParams?.error && (
+          {error && (
             <p className="rounded-lg bg-red-500/20 px-4 py-2 text-sm text-red-400">
-              {searchParams.error}
+              {error}
             </p>
           )}
-          {searchParams?.success && (
+          {success && (
             <p className="rounded-lg bg-emerald-500/20 px-4 py-2 text-sm text-emerald-400">
-              {searchParams.success}
+              {success}
             </p>
           )}
           <button

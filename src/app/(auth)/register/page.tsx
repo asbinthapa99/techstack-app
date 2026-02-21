@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { signup } from "./actions";
 
-export default function RegisterPage({
+export default async function RegisterPage({
     searchParams,
 }: {
-    searchParams: { error?: string };
+    searchParams: Promise<{ error?: string }>;
 }) {
+    const { error } = await searchParams;
     return (
         <div className="flex min-h-[80vh] items-center justify-center px-4">
             <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-xl">
@@ -40,9 +41,9 @@ export default function RegisterPage({
                             autoComplete="new-password"
                         />
                     </div>
-                    {searchParams?.error && (
+                    {error && (
                         <p className="rounded-lg bg-red-500/20 px-4 py-2 text-sm text-red-400">
-                            {searchParams.error}
+                            {error}
                         </p>
                     )}
                     <button
